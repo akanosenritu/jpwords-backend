@@ -38,9 +38,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_extensions',
-    'api.apps.ApiConfig'
+    'api.apps.ApiConfig',
+    'dj_rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,3 +143,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        'rest_framework.authentication.TokenAuthentication'
+    ]
+}
