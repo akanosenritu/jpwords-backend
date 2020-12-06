@@ -33,3 +33,7 @@ class WordNote(models.Model):
     associated_categories = models.ManyToManyField(Category)
     title = models.CharField(max_length=200)
     is_published = models.BooleanField(default=False)
+    
+
+class PracticeHistory(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

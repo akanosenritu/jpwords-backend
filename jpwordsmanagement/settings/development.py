@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_extensions',
     'api.apps.ApiConfig',
+    'user.apps.UserConfig',
     'dj_rest_auth',
     'django.contrib.sites',
     'allauth',
@@ -158,3 +159,5 @@ REST_FRAMEWORK = {
 }
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+AUTH_USER_MODEL = 'user.MyUser'
