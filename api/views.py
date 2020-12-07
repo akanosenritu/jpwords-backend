@@ -1,7 +1,12 @@
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from api.models import Category, Word, WordNote, WordList
-from api.serializers import CategorySerializer, WordSerializer, WordNoteSerializer, WordListSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from api.models import Category, Word, WordNote, WordList, PracticeHistory
+from api.serializers import CategorySerializer, WordSerializer, WordNoteSerializer, WordListSerializer, PracticeHistorySerializer
+from user.models import MyUser
 import datetime
 
 
@@ -23,7 +28,28 @@ class WordNoteViewSet(viewsets.ModelViewSet):
 class WordListViewSet(viewsets.ModelViewSet):
     queryset = WordList.objects.all().order_by("name")
     serializer_class = WordListSerializer
-
+    
+    
+class PracticeHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        queryset = PracticeHistory.objects.all()
+        practice_history = get_object_or_404(queryset, user=request.user)
+        serializer = PracticeHistorySerializer(practice_history)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        try:
+            old_practice_history = PracticeHistory.objects.get(user=request.user)
+            serializer = PracticeHistorySerializer(old_practice_history, data=request.data,
+                                                   context={"request": request})
+        except PracticeHistory.DoesNotExist:
+            serializer = PracticeHistorySerializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
 
 def generate_words_files(request):
     d = dict()

@@ -1,5 +1,7 @@
 from django.db import models
 import uuid
+from user.models import MyUser
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -37,3 +39,7 @@ class WordNote(models.Model):
 
 class PracticeHistory(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE, null=True)
+    last_update_date = models.DateTimeField(default=timezone.now)
+    version = models.FloatField(default=0)
+    data = models.TextField(default="")
