@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    ".herokuapp.com"
+    "studyjlpt.netlify.app"
 ]
 
 
@@ -147,8 +147,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication'
     ]
 }
 
