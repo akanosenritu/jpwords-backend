@@ -1,5 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+import json
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -66,4 +72,38 @@ def generate_words_files(request):
     return JsonResponse(data=d, json_dumps_params={"ensure_ascii": False, "indent": 2})
     
     
+@ensure_csrf_cookie
+def set_csrf_token(request):
+    return JsonResponse({"details": "CSRF cookie set"})
 
+
+@require_POST
+def login_view(request, *args):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
+    if username is None or password is None:
+        return JsonResponse({
+            "errors": {
+                "__all__": "Please enter both username and password"
+            }
+        }, status=400)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request, user)
+        print(f"User {username} logged in.")
+        return JsonResponse({"detail": "Success"})
+    return JsonResponse(
+        {"detail": "Invalid credentials"},
+        status=400,
+    )
+
+
+@require_POST
+@login_required
+def logout_view(request):
+    print(f"User {request.user.username} is logging out.")
+    logout(request)
+    return JsonResponse(
+        {"detail": "success"}
+    )

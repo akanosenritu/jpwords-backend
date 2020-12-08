@@ -10,6 +10,9 @@ router.register(r"word-notes", views.WordNoteViewSet)
 
 urlpatterns = [
     path("generate-words-file/", views.generate_words_files),
+    path("set-csrf-token/", views.set_csrf_token),
+    path("login/", views.login_view),
+    path("logout/", views.logout_view),
     path("practice-history/", views.PracticeHistoryView.as_view())
 ]
 

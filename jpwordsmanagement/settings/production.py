@@ -138,6 +138,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 CORS_ORIGIN_WHITELIST = [
     'https://akanosenritu-jpwords2.herokuapp.com',
+    'https://studyjlpt.netlify.app/',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -146,7 +147,8 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        'rest_framework.authentication.TokenAuthentication'
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
     ]
 }
 
