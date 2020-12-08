@@ -138,7 +138,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 CORS_ORIGIN_WHITELIST = [
     'https://akanosenritu-jpwords2.herokuapp.com',
-    'https://studyjlpt.netlify.app/',
+    'https://studyjlpt.netlify.app',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -155,3 +155,5 @@ REST_FRAMEWORK = {
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 AUTH_USER_MODEL = 'user.MyUser'
+
+CSRF_TRUSTED_ORIGINS = ["studyjlpt.netlify.app"]
