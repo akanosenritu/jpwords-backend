@@ -84,9 +84,7 @@ def login_view(request, *args):
     password = data.get('password')
     if username is None or password is None:
         return JsonResponse({
-            "errors": {
-                "__all__": "Please enter both username and password"
-            }
+            "error": "Please enter both username and password"
         }, status=400)
     user = authenticate(username=username, password=password)
     if user is not None:
@@ -94,16 +92,59 @@ def login_view(request, *args):
         print(f"User {username} logged in.")
         return JsonResponse({"detail": "Success"})
     return JsonResponse(
-        {"detail": "Invalid credentials"},
+        {"error": "Invalid credentials"},
         status=400,
     )
+
+
+@login_required
+def is_logged_in(request):
+    return JsonResponse({
+        "detail": "success"
+    })
 
 
 @require_POST
 @login_required
 def logout_view(request):
-    print(f"User {request.user.username} is logging out.")
     logout(request)
     return JsonResponse(
         {"detail": "success"}
     )
+
+
+@require_POST
+def registration_view(request, *args, **kwargs):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password1 = data.get('password1')
+    password2 = data.get('password2')
+    if MyUser.objects.filter(username=username):
+        return JsonResponse({
+            "error": "The username has been taken."
+        }, status=400)
+    if password1 != password2:
+        return JsonResponse({
+            "error": "Two passwords don't match."
+        }, status=400)
+    user = MyUser.objects.create_user(username, password1)
+    user.save()
+    return JsonResponse({"detail": "Success"})
+
+
+@login_required
+@require_POST
+def password_reset_view(request, *args, **kwargs):
+    data = json.loads(request.body)
+    username = data.get("username")
+    old_password = data.get("oldPassword")
+    new_password1 = data.get("newPassword1")
+    new_password2 = data.get("newPassword2")
+    if new_password1 != new_password2:
+        return JsonResponse({
+            "error": "Two new passwords don't match."
+        }, status=400)
+    user = authenticate(username=username, password=old_password)
+    user.set_password(new_password1)
+    user.save()
+    return JsonResponse({"detail": "Success"})
