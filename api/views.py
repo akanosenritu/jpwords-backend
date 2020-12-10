@@ -44,17 +44,20 @@ class PracticeHistoryView(APIView):
         practice_history = get_object_or_404(queryset, user=request.user)
         serializer = PracticeHistorySerializer(practice_history)
         return Response(serializer.data)
-    
-    def post(self, request):
+
+    def post(self, request, *args, **kwargs):
         try:
             old_practice_history = PracticeHistory.objects.get(user=request.user)
             serializer = PracticeHistorySerializer(old_practice_history, data=request.data,
                                                    context={"request": request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
         except PracticeHistory.DoesNotExist:
             serializer = PracticeHistorySerializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=201)
     
 
 def generate_words_files(request):
@@ -129,6 +132,7 @@ def registration_view(request, *args, **kwargs):
         }, status=400)
     user = MyUser.objects.create_user(username, password1)
     user.save()
+    authenticate(username=username, password=password1)
     return JsonResponse({"detail": "Success"})
 
 
