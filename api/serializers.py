@@ -40,4 +40,4 @@ class PracticeHistorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PracticeHistory
-        fields = ["uuid", "last_update_date", "version", "data", "user"]
+        fields = ["uuid", "last_update_date", "version", "data", "user", "hash"]
